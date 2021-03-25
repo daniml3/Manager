@@ -1,0 +1,41 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Manager</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_build">Build</string>
+    <string name="getting_status">Getting server status</string>
+    <string name="server_available">The server is up</string>
+    <string name="server_information">
+        Available executors: <xliff:g id="available_executors">%1$s</xliff:g> \nBusy executors: <xliff:g id="busy_executors">%2$s</xliff:g>
+    </string>
+    <string name="server_unavailable">Server not available</string>
+    <string name="refresh">Refresh</string>
+    <string name="config_card_title">Build configuration</string>
+
+    <string name="build_token_hint">Build token</string>
+    <string name="missing_build_token">Add your build token in the settings</string>
+    <string name="check_server_again">Try to connect again</string>
+
+    <string name="running">Running</string>
+    <string name="not_running">Not running</string>
+
+    <string name="save_changes">Save changes</string>
+
+    <string name="sync">Sync</string>
+    <string name="clean">Clean</string>
+    <string name="clean_product">Clean\nproduct</string>
+    <string name="ccache">CCache</string>
+    <string name="default_value">Default</string>
+    <string name="vanilla">Vanilla</string>
+    <string name="gapps">GApps</string>
+    <string name="both">Both</string>
+    <string name="official">Official</string>
+    <string name="no_repopick">No\nrepopick</string>
+    <string name="building">Building</string>
+</resources>

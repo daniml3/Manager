@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue">#FF3399ff</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#FF252525</color>
+
+    <!-- Accents -->
+    <color name="light_accent">#FFE3E3E3</color>
+    <color name="dark_accent">#FF333333</color>
+
+    <color name="button_disabled">#FFC0C0C0</color>
+    <color name="fill_color">@color/black</color>
+</resources>
