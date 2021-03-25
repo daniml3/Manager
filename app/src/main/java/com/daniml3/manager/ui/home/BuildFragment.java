@@ -1,11 +1,11 @@
 package com.daniml3.manager.ui.home;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.ClipData;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,11 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -29,8 +28,11 @@ import com.daniml3.manager.Constants;
 import com.daniml3.manager.NetUtils;
 import com.daniml3.manager.R;
 import com.daniml3.manager.Utils;
+import com.daniml3.manager.components.CardLogHandler;
+import com.daniml3.manager.components.ViewAnimator;
 import com.daniml3.manager.extensions.AnimatedButton;
 import com.daniml3.manager.extensions.BuildButton;
+import com.daniml3.manager.extensions.ExpandableCardView;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,12 +44,13 @@ import java.util.ArrayList;
 
 import static com.daniml3.manager.Constants.TAG;
 
-public class BuildFragment extends Fragment  {
+public class BuildFragment extends Fragment {
 
     private Activity mActivity;
     private Context mContext;
 
     private AnimatedButton mTriggerBuildButton;
+    private AnimatedButton mRefreshButton;
 
     private String mBuildToken;
 
@@ -56,11 +59,22 @@ public class BuildFragment extends Fragment  {
     private ArrayList<String> mArgumentList;
     private ArrayList<BuildButton> mBuildButtonList;
     private ArrayList<LinearLayout> mLinearLayoutList;
-    private ArrayList<View> mBuildInfoCardList;
+    private ArrayList<ExpandableCardView> mBuildInfoCardList;
 
     private DrawerLayout drawer;
 
-    private final int FADE_DURATION = 250;
+    private ScrollView mMainContainer;
+
+    private int mBuildInfoCardCount;
+
+    private boolean mPreparingUI;
+
+    private ViewAnimator mTriggerBuildButtonAnimator;
+
+    private JSONArray mJobList;
+
+    private final int BUTTON_FADE_DURATION = 1000;
+    private final int CARD_FADE_DURATION = 250;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -73,37 +87,37 @@ public class BuildFragment extends Fragment  {
 
     @Override
     public void onViewCreated(@NotNull View createdView, Bundle savedInstanceState) {
-        // Initialize the lists
         mBuildButtonList = new ArrayList<>();
         mArgumentList = new ArrayList<>();
         mLinearLayoutList = new ArrayList<>();
         mBuildInfoCardList = new ArrayList<>();
 
-        // Initialize the views
-        AnimatedButton refreshButton = mActivity.findViewById(R.id.build_action_button);
+        mJobList = new JSONArray();
 
-        sharedPreferences = mContext.getSharedPreferences("fragment_settings", 0);
+        mRefreshButton = mActivity.findViewById(R.id.build_action_button);
+        sharedPreferences = mActivity.getSharedPreferences(Constants.SETTINGS_PREFERENCES, 0);
         mTriggerBuildButton = mActivity.findViewById(R.id.build_button);
-        mBuildToken = sharedPreferences.getString("build_token", "");
         drawer = mActivity.findViewById(R.id.drawer_layout);
+        mMainContainer = mActivity.findViewById(R.id.main_build_container);
 
-        // Layout parameters that will be used for the switches
+        mBuildToken = sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, "");
+        mBuildInfoCardCount = sharedPreferences.getInt(Constants.BUILD_CAR_COUNT_PREFERENCE, Constants.BUILD_CARD_COUNT_DEFAULT);
+
+        mTriggerBuildButtonAnimator = new ViewAnimator(mTriggerBuildButton);
+
         LinearLayout.LayoutParams layoutParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
 
-        refreshButton.setOnClickListener(this::prepareUI);
+        mRefreshButton.setOnClickListener(this::prepareUI);
 
-        refreshButton.setOnLongClickListener(() -> {
+        mRefreshButton.setOnLongClickListener(() -> {
             Utils.vibrate(mContext);
             drawer.open();
         });
 
-        generateConfigButtons(layoutParams);
-
-        // Clear the switch list
         mBuildButtonList.clear();
 
         CardView configCardView = mActivity.findViewById(R.id.build_config_card);
@@ -111,8 +125,6 @@ public class BuildFragment extends Fragment  {
             Utils.vibrate(mContext);
             return true;
         });
-
-        clearLayouts();
 
         generateConfigButtons(layoutParams);
         prepareUI();
@@ -125,10 +137,10 @@ public class BuildFragment extends Fragment  {
     }
 
     private LinearLayout getLinearLayout(int currentItemCount) {
-        if (currentItemCount % 3 == 0){
+        if (currentItemCount % 3 == 0) {
             LinearLayout linearLayout = new LinearLayout(mContext);
 
-            linearLayout.setPadding(0, 10, 0 ,10);
+            linearLayout.setPadding(0, 10, 0, 10);
             linearLayout.setGravity(Gravity.CENTER);
 
             ((LinearLayout) mActivity.findViewById(R.id.switch_container)).addView(linearLayout);
@@ -137,25 +149,14 @@ public class BuildFragment extends Fragment  {
             return linearLayout;
         }
 
-        return mLinearLayoutList.get(mLinearLayoutList.size()-1);
-    }
-
-    private void clearLayouts() {
-        int[] linearLayoutList = {R.id.switch_container};
-        for (int id : linearLayoutList) {
-            LinearLayout linearLayout = mActivity.findViewById(id);
-            linearLayout.removeAllViews();
-        }
-
-        ViewGroup insertPoint = mActivity.findViewById(R.id.build_info_card_container);
-        insertPoint.removeAllViews();
+        return mLinearLayoutList.get(mLinearLayoutList.size() - 1);
     }
 
     private void showSnackBar(String content) {
         Snackbar.make(mActivity.findViewById(R.id.build_snack_bar_placeholder), content, Snackbar.LENGTH_SHORT).show();
     }
 
-    private Runnable getBuildButtonRunnable() {
+    private Runnable getBuildScheduleRunnable() {
         return () -> {
             mArgumentList.clear();
 
@@ -173,76 +174,88 @@ public class BuildFragment extends Fragment  {
                 return;
             }
 
-            mActivity.runOnUiThread(() -> mTriggerBuildButton.stopLoadingAnimation());
+            mActivity.runOnUiThread(() -> mTriggerBuildButtonAnimator.stopLoadingAnimation());
             NetUtils.getJSONResponse(Utils.getSchedulingUrl(
-                    sharedPreferences.getString("build_token", ""), mArgumentList));
-            mActivity.runOnUiThread(() -> mTriggerBuildButton.stopLoadingAnimation());
+                    sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, ""), mArgumentList));
+            mActivity.runOnUiThread(() -> mTriggerBuildButtonAnimator.stopLoadingAnimation());
         };
     }
 
     private void prepareUI() {
-        mBuildToken = sharedPreferences.getString("build_token", "");
+        if (mPreparingUI) {
+            return;
+        }
+
+        mBuildToken = sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, "");
+        mPreparingUI = true;
+        mMainContainer.fullScroll(ScrollView.FOCUS_UP);
 
         new Thread(() -> {
-            mActivity.runOnUiThread(() -> mTriggerBuildButton.startLoadingAnimation());
             LinearLayout cardContainer = mActivity.findViewById(R.id.build_info_card_container);
-            boolean isServerAvailable = Utils.isServerAvailable();
-            JSONArray jobList = Utils.getJobList();
-            int jobListLength = jobList.length();
 
             mActivity.runOnUiThread(() -> {
                 clearBuildInfoCards(cardContainer);
 
-                if (!isServerAvailable) {
-                        mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.button_disabled));
-                        mTriggerBuildButton.setText(R.string.server_unavailable);
-                        showSnackBar(mActivity.getString(R.string.server_unavailable));
-                        mTriggerBuildButton.setOnClickListener(this::prepareUI);
-                } else if (!mBuildToken.isEmpty()){
-                        mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.blue));
-                        mTriggerBuildButton.setText(R.string.menu_build);
-                        mTriggerBuildButton.setOnClickListener(() -> new Thread(getBuildButtonRunnable()).start());
+                if (mBuildToken.isEmpty()) {
+                    mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.button_disabled));
+                    mTriggerBuildButton.setText(R.string.missing_build_token);
+                    mTriggerBuildButton.clearOnClickListener();
                 } else {
-                        mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.button_disabled));
-                        mTriggerBuildButton.setText(R.string.missing_build_token);
-                        mTriggerBuildButton.clearOnClickListener();
+                    mTriggerBuildButtonAnimator.startLoadingAnimation(BUTTON_FADE_DURATION);
+                }
+            });
+
+            if (mBuildToken.isEmpty()) {
+                return;
+            }
+
+            mTriggerBuildButton.setText(R.string.getting_status);
+            boolean isServerAvailable = Utils.isServerAvailable();
+
+            if (isServerAvailable) {
+                mJobList = Utils.getJobList();
+            }
+
+            mActivity.runOnUiThread(() -> {
+                if (!isServerAvailable) {
+                    mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.button_disabled));
+                    mTriggerBuildButton.setText(R.string.server_unavailable);
+                    showSnackBar(mActivity.getString(R.string.server_unavailable));
+                    mTriggerBuildButton.setOnClickListener(this::prepareUI);
+                } else if (!mBuildToken.isEmpty()) {
+                    mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.blue));
+                    mTriggerBuildButton.setText(R.string.menu_build);
+                    mTriggerBuildButton.setOnClickListener(() -> getBuildConfirmationDialog().show());
                 }
 
                 mHandler.postDelayed(() -> {
                     if (isServerAvailable) {
-                        for (int i = 0; i < 5 && i < jobListLength; i++) {
+                        for (int i = 0; i < mBuildInfoCardCount && i < mJobList.length(); i++) {
                             try {
-                                generateBuildInfoCard(jobList.getJSONObject(i), cardContainer);
+                                generateBuildInfoCard(mJobList.getJSONObject(i), cardContainer);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
-                }, FADE_DURATION);
+                }, BUTTON_FADE_DURATION);
 
             });
 
-            mActivity.runOnUiThread(() -> mTriggerBuildButton.stopLoadingAnimation());
+            mActivity.runOnUiThread(() -> mTriggerBuildButtonAnimator.stopLoadingAnimation());
+            mPreparingUI = false;
         }).start();
     }
 
-    /*
-    * Generate the buttons
-    *
-    * The values will be taken from the Constants class
-    * All the validation will be executed on the button class
-    */
     private void generateConfigButtons(LinearLayout.LayoutParams layoutParams) {
+        int i = 0;
+        mBuildButtonList.clear();
+
         try {
-            mBuildButtonList.clear();
-            int i = 0;
-            // Generate the switches for the configuration
             for (int[] switchTextList : Constants.TEXTS_FOR_SWITCHES) {
-                // Create a new switch
                 BuildButton buildButton = new BuildButton(mActivity);
                 LinearLayout linearLayout = getLinearLayout(i);
 
-                // Configure the switch with the name and the default checked value.
                 buildButton.setBuildVariableName(
                         Constants.BUILD_VARIABLE_PREFIX + Constants.VARIABLE_NAMES_FOR_SWITCHES[i].toUpperCase());
                 buildButton.setMaximumState(Constants.SWITCHES_MAX_VALUES[i]);
@@ -254,7 +267,9 @@ public class BuildFragment extends Fragment  {
                 buildButton.setLayoutParams(layoutParams);
                 buildButton.validate();
 
-                // Add the switch to the list and to the layout
+                buildButton.setRetainHeight(true);
+                buildButton.setRetainWidth(true);
+
                 mBuildButtonList.add(buildButton);
                 linearLayout.addView(buildButton);
                 i++;
@@ -267,24 +282,63 @@ public class BuildFragment extends Fragment  {
 
     private void generateBuildInfoCard(JSONObject buildInfo, LinearLayout cardContainer) throws JSONException {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View buildInfoCard = inflater.inflate(R.layout.build_info_card, cardContainer, false);
+        ExpandableCardView buildInfoCard = (ExpandableCardView) inflater.inflate(R.layout.build_info_card, cardContainer, false);
         String title = buildInfo.getString("fullDisplayName");
         String status = buildInfo.getString("result");
         String url = buildInfo.getString("url");
 
         TextView buildTitle = buildInfoCard.findViewById(R.id.build_title);
         TextView buildStatus = buildInfoCard.findViewById(R.id.build_status);
+        TextView logContainer = buildInfoCard.findViewById(R.id.log_container);
+        View separator = buildInfoCard.findViewById(R.id.separator);
+
         buildTitle.setText(title);
         if (buildInfo.getBoolean("building")) {
-            buildStatus.setText(R.string.building);
+            buildStatus.setText(R.string.build_building);
         } else {
-            buildStatus.setText(status);
+            int color = 0;
+            int statusString = 0;
+
+            switch (status.toLowerCase()) {
+                case "aborted":
+                    color = Color.GRAY;
+                    statusString = R.string.build_aborted;
+                    break;
+                case "success":
+                    color = Color.GREEN;
+                    statusString = R.string.build_success;
+                    break;
+                case "failure":
+                    statusString = R.string.build_failure;
+                    color = Color.RED;
+                    break;
+            }
+
+            if (color != 0) {
+                separator.setBackgroundColor(color);
+            }
+
+            if (statusString != 0) {
+                buildStatus.setText(statusString);
+            } else {
+                buildStatus.setText(Utils.firstLetterToUpperCase(status.toLowerCase()));
+            }
         }
 
-        buildInfoCard.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))));
+        buildInfoCard.setExpandableView(logContainer);
+        buildInfoCard.setOnLongClickListener(() -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))));
 
         buildInfoCard.setAlpha(0f);
         buildInfoCard.animate().alpha(1.0f).setDuration(250).start();
+        buildInfoCard.setOnClickListener(() -> {
+            for (ExpandableCardView expandableCardView : mBuildInfoCardList) {
+                if (expandableCardView.isExpanded() && expandableCardView != buildInfoCard) {
+                    expandableCardView.setExpanded(false);
+                }
+            }
+        });
+
+        new CardLogHandler(buildInfoCard, buildInfo);
 
         mBuildInfoCardList.add(buildInfoCard);
         cardContainer.addView(buildInfoCard);
@@ -293,11 +347,23 @@ public class BuildFragment extends Fragment  {
     private void clearBuildInfoCards(LinearLayout cardContainer) {
         if (!mBuildInfoCardList.isEmpty()) {
             for (View card : mBuildInfoCardList) {
-                card.animate().alpha(0.0f).setDuration(FADE_DURATION).start();
+                card.animate().alpha(0f).setDuration(CARD_FADE_DURATION).start();
             }
 
-            mHandler.postDelayed(cardContainer::removeAllViews, FADE_DURATION);
-            mBuildButtonList.clear();
+            mHandler.postDelayed(cardContainer::removeAllViews, CARD_FADE_DURATION);
+            mBuildInfoCardList.clear();
         }
+    }
+
+    private AlertDialog.Builder getBuildConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+        builder.setPositiveButton(R.string.accept, (dialog, which) -> new Thread(getBuildScheduleRunnable()).start());
+        builder.setNegativeButton(R.string.cancel, null);
+
+        builder.setTitle(R.string.build_confirmation_title);
+        builder.setMessage(R.string.build_confirmation_summary);
+
+        return builder;
     }
 }

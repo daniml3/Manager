@@ -18,7 +18,10 @@ public class Utils {
     }
 
     public static void sleep(int ms) {
-        try { Thread.sleep(ms); } catch (InterruptedException ignore) {}
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ignore) {
+        }
     }
 
     public static String getSchedulingUrl(String token, ArrayList<String> arguments) {
@@ -27,7 +30,7 @@ public class Utils {
 
         for (int i = 0; i < arguments.size() - 1; i++) {
             String mArgumentName = arguments.get(i);
-            String mArgumentValue = arguments.get(i+1);
+            String mArgumentValue = arguments.get(i + 1);
 
             mArgumentStringBuilder.append("&{name}={value}"
                     .replace("{name}", mArgumentName)
@@ -51,6 +54,14 @@ public class Utils {
     }
 
     public static boolean isServerAvailable() {
-        return !(Utils.getServerAvailableResponse().length() == 0);
+        JSONObject response = getServerAvailableResponse();
+        return !(response == null);
+    }
+
+    public static String firstLetterToUpperCase(String string) {
+        if (string == null || string.length() == 0) {
+            return string;
+        }
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 }

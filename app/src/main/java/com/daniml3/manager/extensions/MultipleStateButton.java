@@ -14,62 +14,66 @@ public class MultipleStateButton extends AnimatedButton {
     private int mState = 0;
     private int mMaxState = 1;
 
-    private int[] mColorList = new int[] {};
-    private int[] mTextList = new int[] {};
+    private int[] mColorList = new int[]{};
+    private int[] mTextList = new int[]{};
+
+    private boolean mRetainHeight;
+    private boolean mRetainWidth;
 
     public MultipleStateButton(@NonNull Context context) {
         super(context);
         mContext = context;
 
         setOnClickListener(() -> {
+            int initialHeight = getHeight();
+            int initialWidth = getWidth();
+
             incrementState();
-            updateState();
+            update();
+
+            if (mRetainHeight) {
+                setHeight(initialHeight);
+            }
+
+            if (mRetainWidth) {
+                setWidth(initialWidth);
+            }
         });
     }
 
-    /*
-    * Set the maximum state on the button, starting from 0
-    */
     public void setMaximumState(int state) {
         mMaxState = state;
     }
 
-    /*
-    * @return the current state
-    */
     public int getState() {
         return mState;
     }
 
-    /*
-    * Set the given state
-    */
     public void setState(int state) {
         mState = state;
-        updateState();
+        update();
     }
 
-    /*
-    * Set the current maximum state
-    */
     public int getMaxStates() {
         return mMaxState;
     }
 
-    /*
-    * Set the color list, which contains the colors that will be used for each state
-    */
     public void setColorListForStates(int[] colorList) {
         mColorList = colorList;
         updateBackgroundTint();
     }
 
-    /*
-    * Set the text list, which contains the strings that will be used for each state
-    */
     public void setTextListForStates(int[] stringList) {
         mTextList = stringList;
         updateText();
+    }
+
+    public void setRetainHeight(boolean retain) {
+        mRetainHeight = retain;
+    }
+
+    public void setRetainWidth(boolean retain) {
+        mRetainWidth = retain;
     }
 
     private void incrementState() {
@@ -80,17 +84,14 @@ public class MultipleStateButton extends AnimatedButton {
         }
     }
 
-    /*
-    * Update the current state, and increment it if told to
-    */
-    private void updateState() {
+    private void update() {
+
         updateBackgroundTint();
         updateText();
+
+
     }
 
-    /*
-    * Update the current background depending on the state
-    */
     private void updateBackgroundTint() {
         if (mColorList.length == 0) {
             return;
@@ -99,9 +100,6 @@ public class MultipleStateButton extends AnimatedButton {
         setBackgroundTintList(mContext.getColorStateList(mColorList[mState]));
     }
 
-    /*
-    * Update the text to match the current state
-    */
     private void updateText() {
         if (mTextList.length == 0) {
             return;
@@ -110,17 +108,10 @@ public class MultipleStateButton extends AnimatedButton {
         setText(mTextList[mState]);
     }
 
-    /*
-    * @return true if the state is invalid
-    */
     private boolean isStateInvalid(int state) {
         return (state > mMaxState || state < 0);
     }
 
-    /*
-    * Validate the current switch configuration
-    * @throw a runtime exception if an invalid configuration is found
-    */
     public void validate() {
         if (isStateInvalid(mState)) {
             Log.e(TAG, "Invalid state " + mState);

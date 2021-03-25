@@ -11,11 +11,11 @@
         <item
             android:id="@+id/nav_build"
             android:icon="@drawable/ic_build_black"
-            android:title="@string/menu_build"/>
+            android:title="@string/menu_build" />
 
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_black"
-            android:title="@string/action_settings"/>
+            android:title="@string/menu_settings" />
     </group>
 </menu>

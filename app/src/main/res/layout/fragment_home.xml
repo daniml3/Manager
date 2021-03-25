@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -30,13 +29,13 @@
                 android:textSize="28sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginRight="10dp" />
 
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="2dp"
                 android:layout_margin="10dp"
-                android:background="@color/blue"/>
+                android:background="@color/blue" />
 
             <TextView
                 android:id="@+id/status_description"
@@ -46,7 +45,7 @@
                 android:textSize="18sp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginRight="10dp" />
 
         </LinearLayout>
 
@@ -81,6 +80,6 @@
             android:text="@string/refresh"
             android:textColor="@color/fill_color"
             android:contentDescription="@string/refresh" />
-    </LinearLayout >
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

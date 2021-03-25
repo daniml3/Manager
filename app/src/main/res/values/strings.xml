@@ -1,32 +1,33 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Manager</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
+    <!-- Drawer -->
     <string name="menu_home">Home</string>
     <string name="menu_build">Build</string>
+    <string name="menu_settings">Settings</string>
+
+    <!-- Home -->
     <string name="getting_status">Getting server status</string>
     <string name="server_available">The server is up</string>
     <string name="server_information">
         Available executors: <xliff:g id="available_executors">%1$s</xliff:g> \nBusy executors: <xliff:g id="busy_executors">%2$s</xliff:g>
     </string>
-    <string name="server_unavailable">Server not available</string>
-    <string name="refresh">Refresh</string>
+
+    <!-- Build -->
     <string name="config_card_title">Build configuration</string>
-
-    <string name="build_token_hint">Build token</string>
+    <string name="server_unavailable">Server not available</string>
     <string name="missing_build_token">Add your build token in the settings</string>
-    <string name="check_server_again">Try to connect again</string>
+    <string name="fetching_log">Fetching log…</string>
+    <string name="failed_to_fetch_log">Failed to fetch the log</string>
+    <string name="build_confirmation_title">Build confirmation</string>
+    <string name="build_confirmation_summary">Continuing will schedule a build in the server. Click accept if you want to proceed.</string>
 
-    <string name="running">Running</string>
-    <string name="not_running">Not running</string>
-
+    <!-- Settings -->
+    <string name="build_token_hint">Build token</string>
+    <string name="build_cards">Build card count</string>
     <string name="save_changes">Save changes</string>
 
+    <!-- Build buttons -->
     <string name="sync">Sync</string>
     <string name="clean">Clean</string>
     <string name="clean_product">Clean\nproduct</string>
@@ -37,5 +38,15 @@
     <string name="both">Both</string>
     <string name="official">Official</string>
     <string name="no_repopick">No\nrepopick</string>
-    <string name="building">Building</string>
+
+    <!-- Build status -->
+    <string name="build_building">Building</string>
+    <string name="build_aborted">Aborted</string>
+    <string name="build_failure">Failure</string>
+    <string name="build_success">Success</string>
+
+    <!-- General -->
+    <string name="refresh">Refresh</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
 </resources>

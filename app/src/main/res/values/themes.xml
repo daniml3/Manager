@@ -15,10 +15,13 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textColor">@color/fill_color</item>
     </style>
+
     <style name="Theme.Manager.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="Theme.Manager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="Theme.Manager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
