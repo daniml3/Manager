@@ -24,13 +24,13 @@
             android:textStyle="bold"
             android:text="@string/build_token_hint" />
 
-        <EditText
-            android:id="@+id/text_box"
+        <com.daniml3.manager.extensions.HideableEditText
+            android:id="@+id/build_token_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:hint="@string/build_token_hint"
             android:autofillHints="@string/build_token_hint" />
     </LinearLayout>
@@ -51,23 +51,14 @@
             android:textStyle="bold"
             android:text="@string/build_cards" />
 
-        <TextView
-            android:id="@+id/build_card_count_text"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textStyle="bold"
-            android:layout_margin="10dp"
-            android:textSize="20sp" />
-
-        <SeekBar
+        <EditText
             android:id="@+id/build_card_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:min="1"
-            android:max="20" />
+            android:layout_margin="10dp"
+            android:inputType="number"
+            android:hint="@string/build_card_count_hint"
+            android:autofillHints="@string/build_card_count_hint" />
 
     </LinearLayout>
 

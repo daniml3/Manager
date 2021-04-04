@@ -26,6 +26,7 @@
     <string name="build_token_hint">Build token</string>
     <string name="build_cards">Build card count</string>
     <string name="save_changes">Save changes</string>
+    <string name="build_card_count_hint">Build card count</string>
 
     <!-- Build buttons -->
     <string name="sync">Sync</string>

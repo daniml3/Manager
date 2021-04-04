@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +18,11 @@ import com.daniml3.manager.Constants;
 import com.daniml3.manager.R;
 import com.daniml3.manager.Utils;
 import com.daniml3.manager.extensions.AnimatedButton;
+import com.daniml3.manager.extensions.HideableEditText;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class SettingsFragment extends Fragment {
 
@@ -30,11 +31,8 @@ public class SettingsFragment extends Fragment {
 
     private SharedPreferences sharedPreferences;
 
-    private EditText mBuildTokenBox;
-
-    private SeekBar mBuildCardCountBar;
-
-    private TextView mBuildInfoCardCountText;
+    private HideableEditText mBuildTokenBox;
+    private EditText mBuildCardCountBox;
 
     private DrawerLayout mDrawer;
 
@@ -47,17 +45,16 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
-        mBuildTokenBox = mActivity.findViewById(R.id.text_box);
-        mBuildCardCountBar = mActivity.findViewById(R.id.build_card_count);
+        mBuildTokenBox = mActivity.findViewById(R.id.build_token_box);
+        mBuildCardCountBox = mActivity.findViewById(R.id.build_card_count);
         sharedPreferences = mContext.getSharedPreferences(Constants.SETTINGS_PREFERENCES, 0);
         mDrawer = mActivity.findViewById(R.id.drawer_layout);
         AnimatedButton mSaveChangesButton = mActivity.findViewById(R.id.save_changes_button);
-        mBuildInfoCardCountText = mActivity.findViewById(R.id.build_card_count_text);
 
         mSaveChangesButton.setOnClickListener(() -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(Constants.BUILD_TOKEN_PREFERENCE, mBuildTokenBox.getText().toString());
-            editor.putInt(Constants.BUILD_CAR_COUNT_PREFERENCE, (mBuildCardCountBar.getProgress()));
+            editor.putString(Constants.BUILD_TOKEN_PREFERENCE, Objects.requireNonNull(mBuildTokenBox.getText()).toString());
+            editor.putInt(Constants.BUILD_CAR_COUNT_PREFERENCE, Integer.parseInt((mBuildCardCountBox.getText().toString())));
             editor.apply();
         });
 
@@ -67,23 +64,7 @@ public class SettingsFragment extends Fragment {
         });
 
         mBuildTokenBox.setText(sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, ""));
-        mBuildCardCountBar.setProgress(sharedPreferences.getInt(Constants.BUILD_CAR_COUNT_PREFERENCE, Constants.BUILD_CARD_COUNT_DEFAULT));
-        mBuildInfoCardCountText.setText(String.valueOf(mBuildCardCountBar.getProgress()));
-
-        mBuildCardCountBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mBuildInfoCardCountText.setText(String.valueOf(mBuildCardCountBar.getProgress()));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
+        mBuildCardCountBox.setText(String.valueOf(sharedPreferences.getInt(Constants.BUILD_CAR_COUNT_PREFERENCE, Constants.BUILD_CARD_COUNT_DEFAULT)));
     }
 
     @Override
