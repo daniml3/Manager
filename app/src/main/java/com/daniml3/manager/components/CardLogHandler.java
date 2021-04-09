@@ -31,7 +31,10 @@ public class CardLogHandler {
         expandableCardView.setOnExpandListener(() -> new Thread(() -> {
             String log;
             try {
-                mHandler.post(() -> mLogContainer.setText(R.string.fetching_log));
+                mHandler.post(() -> {
+                    mLogContainer.setText(R.string.fetching_log);
+                    mViewAnimator.startLoadingAnimation(LOADING_ANIMATION_DURATION);
+                });
 
                 log = NetUtils.getResponse(
                         jobInfo.getString("url") + "/consoleText");
@@ -47,6 +50,7 @@ public class CardLogHandler {
                 mHandler.post(() -> {
                     mViewAnimator.startSmoothLayoutChange(LAYOUT_CHANGE_DURATION);
                     mLogContainer.setText(finalLog);
+                    mViewAnimator.stopLoadingAnimation();
                 });
             } catch (JSONException e) {
                 onError();
@@ -56,10 +60,14 @@ public class CardLogHandler {
 
         expandableCardView.setOnCollapseListener(() -> {
             mLogContainer.setText("");
+            mViewAnimator.stopLoadingAnimation();
         }, false);
     }
 
     private void onError() {
-        mHandler.post(() -> mLogContainer.setText(R.string.failed_to_fetch_log));
+        mHandler.post(() -> {
+            mLogContainer.setText(R.string.failed_to_fetch_log);
+            mViewAnimator.stopLoadingAnimation();
+        });
     }
 }
