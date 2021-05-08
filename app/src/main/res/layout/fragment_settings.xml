@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,23 +19,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textSize="20sp"
             android:layout_margin="10dp"
-            android:textStyle="bold"
-            android:text="@string/build_token_hint" />
+            android:text="@string/build_token_hint"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <com.daniml3.manager.extensions.HideableEditText
             android:id="@+id/build_token_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:autofillHints="@string/build_token_hint"
             android:ems="10"
-            android:inputType="textPassword"
             android:hint="@string/build_token_hint"
-            android:autofillHints="@string/build_token_hint" />
+            android:inputType="textPassword" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/build_card_count_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -46,20 +47,74 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textSize="20sp"
             android:layout_margin="10dp"
-            android:textStyle="bold"
-            android:text="@string/build_cards" />
+            android:text="@string/build_card_count"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/build_card_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:inputType="number"
-            android:hint="@string/build_card_count_hint"
-            android:autofillHints="@string/build_card_count_hint" />
+            android:autofillHints="@string/build_card_count"
+            android:hint="@string/build_card_count"
+            android:inputType="number" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/build_card_refresh_freq_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_anchor="@id/build_card_count_container"
+        app:layout_anchorGravity="bottom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:text="@string/build_card_refresh_freq"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/build_card_refresh_freq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:autofillHints="@string/build_card_refresh_freq_hint"
+            android:hint="@string/build_card_refresh_freq_hint"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/log_line_count_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_anchor="@id/build_card_refresh_freq_container"
+        app:layout_anchorGravity="bottom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:text="@string/log_lines_count"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/log_line_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:autofillHints="@string/log_lines_count"
+            android:hint="@string/log_lines_count"
+            android:inputType="number" />
     </LinearLayout>
 
     <com.daniml3.manager.extensions.AnimatedButton
@@ -69,8 +124,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:backgroundTint="@color/blue"
-        android:textColor="@color/fill_color"
         android:drawableStart="@drawable/ic_save_black"
-        android:text="@string/save_changes" />
-    
+        android:text="@string/save_changes"
+        android:textColor="@color/fill_color" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

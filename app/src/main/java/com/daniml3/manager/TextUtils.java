@@ -7,6 +7,10 @@ public class TextUtils {
         int lineCount = splittedParagraph.length;
         StringBuilder stringBuilder = new StringBuilder();
 
+        if (count > lineCount) {
+            count = lineCount;
+        }
+
         for (int i = lineCount - count; i < lineCount; i++) {
             try {
                 stringBuilder.append(splittedParagraph[i]);

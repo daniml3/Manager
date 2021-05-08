@@ -22,7 +22,9 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
         implements View.OnTouchListener, View.OnLongClickListener {
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
+
     private final Context mContext;
+
     private final String TAG = "AnimatedButton";
 
     private boolean mBlockOnClick;
@@ -31,8 +33,6 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
 
     private Runnable mOnClickListener;
     private Runnable mOnLongClickListener;
-
-    private final int FADE_ANIMATION_DURATION = 1000;
 
     public AnimatedButton(@NonNull Context context) {
         this(context, null);
@@ -53,12 +53,12 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
         setAnimationSpeed(100);
     }
 
-    public void setAnimationSpeed(int speed) {
-        mAnimationSpeed = speed;
-    }
-
     public int getAnimationSpeed() {
         return mAnimationSpeed;
+    }
+
+    public void setAnimationSpeed(int speed) {
+        mAnimationSpeed = speed;
     }
 
     @Override

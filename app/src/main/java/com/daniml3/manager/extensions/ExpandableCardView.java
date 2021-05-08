@@ -18,6 +18,12 @@ public class ExpandableCardView extends CardView
 
     private final String TAG = "ExpandableCardView";
 
+    private final ViewAnimator mViewAnimator;
+
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private final int LONG_CLICK_DURATION = 500;
+
     private boolean mExpanded;
     private boolean mBlockOnClick;
     private boolean mBeforeExpand;
@@ -31,12 +37,6 @@ public class ExpandableCardView extends CardView
     private Runnable mOnLongClickListener;
 
     private int mExpandDuration = 100;
-
-    private final ViewAnimator mViewAnimator;
-
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
-
-    private final int LONG_CLICK_DURATION = 500;
 
     public ExpandableCardView(Context context) {
         this(context, null);
@@ -90,13 +90,13 @@ public class ExpandableCardView extends CardView
         };
     }
 
+    public View getExpandableView() {
+        return mExpandableView;
+    }
+
     public void setExpandableView(View view) {
         mExpandableView = view;
         setExpanded(mExpanded);
-    }
-
-    public View getExpandableView() {
-        return mExpandableView;
     }
 
     public boolean isExpanded() {

@@ -4,12 +4,12 @@
     android:id="@+id/build_info_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
-    android:layout_marginRight="10dp"
     android:layout_marginLeft="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/default_corner_radius">
 
     <LinearLayout
@@ -25,6 +25,15 @@
             android:layout_margin="10dp"
             android:textSize="28sp" />
 
+        <com.daniml3.manager.extensions.AnimatedButton
+            android:id="@+id/refresh_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/blue"
+            android:text="@string/refresh"
+            android:visibility="gone" />
+
         <View
             android:id="@+id/separator"
             android:layout_width="wrap_content"
@@ -39,12 +48,21 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp" />
 
-        <TextView
+        <LinearLayout
             android:id="@+id/log_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:background="@drawable/round_text_view" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/log_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_text_view"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
     </LinearLayout>
 
 </com.daniml3.manager.extensions.ExpandableCardView>

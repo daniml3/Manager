@@ -3,12 +3,14 @@ package com.daniml3.manager;
 import android.content.Context;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Utils {
 
@@ -25,19 +27,16 @@ public class Utils {
     }
 
     public static String getSchedulingUrl(String token, ArrayList<String> arguments) {
-        String mBaseUrl = "https://server.danielml.ml/job/arrowos/buildWithParameters?token={token}";
+        String mBaseUrl = "https://server.danielml.ml/job/arrowos/buildWithParameters?token={token}&ARROW_ARGS={args}";
         StringBuilder mArgumentStringBuilder = new StringBuilder();
 
-        for (int i = 0; i < arguments.size() - 1; i++) {
-            String mArgumentName = arguments.get(i);
-            String mArgumentValue = arguments.get(i + 1);
-
-            mArgumentStringBuilder.append("&{name}={value}"
-                    .replace("{name}", mArgumentName)
-                    .replace("{value}", mArgumentValue));
+        for (String argument : arguments) {
+            mArgumentStringBuilder.append(argument);
+            mArgumentStringBuilder.append("%20");
         }
 
-        return mBaseUrl.replace("{token}", token) + mArgumentStringBuilder.toString();
+
+        return mBaseUrl.replace("{token}", token).replace("{args}", mArgumentStringBuilder.toString());
     }
 
     public static JSONObject getServerAvailableResponse() {
@@ -46,9 +45,9 @@ public class Utils {
 
     public static JSONArray getJobList() {
         try {
-            return NetUtils
-                    .getJSONResponse("https://server.danielml.ml/api/json?depth=3").getJSONArray("jobs").getJSONObject(0).getJSONArray("builds");
-        } catch (JSONException e) {
+            return Objects.requireNonNull(NetUtils
+                    .getJSONResponse("https://server.danielml.ml/api/json?depth=3")).getJSONArray("jobs").getJSONObject(0).getJSONArray("builds");
+        } catch (JSONException | NullPointerException e) {
             return new JSONArray();
         }
     }

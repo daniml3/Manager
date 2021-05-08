@@ -2,11 +2,13 @@ package com.daniml3.manager.components;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.TextView;
 
 import com.daniml3.manager.NetUtils;
 import com.daniml3.manager.R;
 import com.daniml3.manager.TextUtils;
+import com.daniml3.manager.extensions.AnimatedButton;
 import com.daniml3.manager.extensions.ExpandableCardView;
 
 import org.json.JSONException;
@@ -14,18 +16,24 @@ import org.json.JSONObject;
 
 public class CardLogHandler {
 
-    private TextView mLogContainer;
-    private ViewAnimator mViewAnimator;
-
-    private final int LOG_LINE_COUNT = 30;
-
     private final int LOADING_ANIMATION_DURATION = 1000;
-    private final int LAYOUT_CHANGE_DURATION = 250;
+    private final int LAYOUT_CHANGE_DURATION = 100;
+
+    private final int mLogLineCount;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public CardLogHandler(ExpandableCardView expandableCardView, JSONObject jobInfo) {
-        mLogContainer = (TextView) expandableCardView.getExpandableView();
+    private final TextView mLogContainer;
+
+    private final ViewAnimator mViewAnimator;
+
+    private final AnimatedButton mRefreshButton;
+
+    public CardLogHandler(ExpandableCardView expandableCardView, JSONObject jobInfo, int logLineCount) {
+        mLogLineCount = logLineCount;
+
+        mLogContainer = expandableCardView.findViewById(R.id.log_textview);
+        mRefreshButton = expandableCardView.findViewById(R.id.refresh_button);
         mViewAnimator = new ViewAnimator(mLogContainer);
 
         expandableCardView.setOnExpandListener(() -> new Thread(() -> {
@@ -34,6 +42,10 @@ public class CardLogHandler {
                 mHandler.post(() -> {
                     mLogContainer.setText(R.string.fetching_log);
                     mViewAnimator.startLoadingAnimation(LOADING_ANIMATION_DURATION);
+                    mViewAnimator.startSmoothLayoutChange(LAYOUT_CHANGE_DURATION);
+                    mRefreshButton.setVisibility(View.VISIBLE);
+
+                    mRefreshButton.setOnClickListener(expandableCardView::callOnExpand);
                 });
 
                 log = NetUtils.getResponse(
@@ -44,7 +56,7 @@ public class CardLogHandler {
                     return;
                 }
 
-                log = TextUtils.getLastLines(log, LOG_LINE_COUNT);
+                log = TextUtils.getLastLines(log, mLogLineCount);
 
                 String finalLog = log;
                 mHandler.post(() -> {
@@ -61,6 +73,8 @@ public class CardLogHandler {
         expandableCardView.setOnCollapseListener(() -> {
             mLogContainer.setText("");
             mViewAnimator.stopLoadingAnimation();
+            mViewAnimator.startSmoothLayoutChange(LAYOUT_CHANGE_DURATION);
+            mRefreshButton.setVisibility(View.GONE);
         }, false);
     }
 

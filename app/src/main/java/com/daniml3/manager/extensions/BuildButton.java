@@ -9,16 +9,10 @@ public class BuildButton extends MultipleStateButton {
 
     private static final String TAG = "BuildButton";
 
-    private String mBuildVariableName;
-
     private String[] mValueList;
 
     public BuildButton(@NonNull Context context) {
         super(context);
-    }
-
-    public String getBuildVariableName() {
-        return mBuildVariableName;
     }
 
     public String getCurrentBuildVariableValue() {
@@ -36,9 +30,5 @@ public class BuildButton extends MultipleStateButton {
         }
 
         mValueList = valueListForValues;
-    }
-
-    public void setBuildVariableName(String variableName) {
-        mBuildVariableName = variableName;
     }
 }

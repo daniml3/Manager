@@ -11,25 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="@dimen/default_corner_radius">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/app_name"
-                android:textStyle="bold"
-                android:textSize="28sp"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/app_name"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="wrap_content"
@@ -41,11 +41,11 @@
                 android:id="@+id/status_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/nav_app_bar_navigate_up_description"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/nav_app_bar_navigate_up_description"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -76,10 +76,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:backgroundTint="@color/blue"
+            android:contentDescription="@string/refresh"
             android:drawableStart="@drawable/ic_refresh_black"
             android:text="@string/refresh"
-            android:textColor="@color/fill_color"
-            android:contentDescription="@string/refresh" />
+            android:textColor="@color/fill_color" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

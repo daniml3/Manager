@@ -21,12 +21,19 @@
     <string name="failed_to_fetch_log">Failed to fetch the log</string>
     <string name="build_confirmation_title">Build confirmation</string>
     <string name="build_confirmation_summary">Continuing will schedule a build in the server. Click accept if you want to proceed.</string>
+    <string name="fetching_build_info">Fetching build information</string>
+
+    <!-- Device codenames -->
+    <string name="device_sweet" translatable="false">Sweet</string>
+    <string name="device_davinci" translatable="false">Davinci</string>
 
     <!-- Settings -->
     <string name="build_token_hint">Build token</string>
-    <string name="build_cards">Build card count</string>
+    <string name="build_card_count">Build card count</string>
     <string name="save_changes">Save changes</string>
-    <string name="build_card_count_hint">Build card count</string>
+    <string name="build_card_refresh_freq">Card refresh frequency</string>
+    <string name="build_card_refresh_freq_hint">Seconds</string>
+    <string name="log_lines_count">Log lines count</string>
 
     <!-- Build buttons -->
     <string name="sync">Sync</string>
