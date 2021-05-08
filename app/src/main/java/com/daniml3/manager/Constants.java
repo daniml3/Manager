@@ -39,4 +39,6 @@ public class Constants {
     public static final String BUILD_CARD_REFRESH_FREQ_PREFERENCE = "build_card_refresh_freq";
     public static final String LOG_LINE_COUNT_PREFERENCE = "log_line_count";
     public static final String SETTINGS_PREFERENCES = "fragment_settings";
+
+    public static final String SERVER_BASE_URL = "https://server.danielml.ml";
 }

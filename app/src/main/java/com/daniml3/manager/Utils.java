@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.daniml3.manager.Constants.SERVER_BASE_URL;
+
 public class Utils {
 
     public static void vibrate(Context context) {
@@ -27,7 +29,7 @@ public class Utils {
     }
 
     public static String getSchedulingUrl(String token, ArrayList<String> arguments) {
-        String mBaseUrl = "https://server.danielml.ml/job/arrowos/buildWithParameters?token={token}&ARROW_ARGS={args}";
+        String mBaseUrl = SERVER_BASE_URL + "/job/arrowos/buildWithParameters?token={token}&ARROW_ARGS={args}";
         StringBuilder mArgumentStringBuilder = new StringBuilder();
 
         for (String argument : arguments) {
@@ -40,13 +42,13 @@ public class Utils {
     }
 
     public static JSONObject getServerAvailableResponse() {
-        return NetUtils.getJSONResponse("https://server.danielml.ml/computer/api/json");
+        return NetUtils.getJSONResponse(SERVER_BASE_URL + "/computer/api/json");
     }
 
     public static JSONArray getJobList() {
         try {
             return Objects.requireNonNull(NetUtils
-                    .getJSONResponse("https://server.danielml.ml/api/json?depth=3")).getJSONArray("jobs").getJSONObject(0).getJSONArray("builds");
+                    .getJSONResponse(SERVER_BASE_URL + "/api/json?depth=3")).getJSONArray("jobs").getJSONObject(0).getJSONArray("builds");
         } catch (JSONException | NullPointerException e) {
             return new JSONArray();
         }
