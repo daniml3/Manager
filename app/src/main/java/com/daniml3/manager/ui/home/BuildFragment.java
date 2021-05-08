@@ -223,14 +223,12 @@ public class BuildFragment extends Fragment {
                 });
             }
 
-            mActivity.runOnUiThread(() -> {
-                mHandler.postDelayed(() -> {
-                    if (isServerAvailable) {
-                        showSnackBar(mActivity.getString(R.string.fetching_build_info));
-                    }
-                    mCardService = new CardService(cardContainer, mBuildInfoCardCount, mContext);
-                    mCardService.init();
-                }, BUTTON_FADE_DURATION);
+            mHandler.post(() -> {
+                if (isServerAvailable) {
+                    showSnackBar(mActivity.getString(R.string.fetching_build_info));
+                }
+                mCardService = new CardService(cardContainer, mBuildInfoCardCount, mContext);
+                mCardService.init();
             });
 
             mActivity.runOnUiThread(() -> mTriggerBuildButtonAnimator.stopLoadingAnimation());

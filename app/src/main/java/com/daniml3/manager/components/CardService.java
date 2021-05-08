@@ -66,8 +66,8 @@ public class CardService {
 
     public void init() {
         new Thread(() -> {
-            mJobsInfo = Utils.getJobList();
-            mLastJobsInfo = Utils.getJobList();
+            mJobsInfo = new JSONArray();
+            mLastJobsInfo = new JSONArray();
             mRunning = true;
 
             generateAllCards();
