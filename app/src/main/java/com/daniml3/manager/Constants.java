@@ -4,7 +4,7 @@ public class Constants {
     public static final String TAG = "Manager";
     public static final String BUILD_VARIABLE_PREFIX = "ARROW_";
 
-    public static final int[] SWITCHES_MAX_VALUES = {1, 2, 1, 3, 1, 1, 1};
+    public static final int[] SWITCHES_MAX_VALUES = {1, 2, 1, 3, 1, 1, 1, 2};
     public static final int[][] COLORS_FOR_SWITCHES = {
             {R.color.button_disabled, R.color.blue}, // Sync switch
             {R.color.button_disabled, R.color.blue, R.color.blue}, // Clean switch
@@ -12,7 +12,8 @@ public class Constants {
             {R.color.button_disabled, R.color.blue, R.color.blue, R.color.blue}, // GApps switch
             {R.color.button_disabled, R.color.blue}, // Official switch
             {R.color.button_disabled, R.color.blue}, // No repopick switch
-            {R.color.blue, R.color.blue}}; // Devices switch
+            {R.color.blue, R.color.blue}, // Devices switch
+            {R.color.blue, R.color.blue, R.color.blue}}; // Build type switch
     public static final int[][] TEXTS_FOR_SWITCHES = {
             {R.string.sync, R.string.sync}, // Sync switch
             {R.string.clean, R.string.clean_product, R.string.clean}, // Clean switch
@@ -20,7 +21,8 @@ public class Constants {
             {R.string.default_value, R.string.vanilla, R.string.gapps, R.string.both}, // GApps switch
             {R.string.official, R.string.official}, // Official switch
             {R.string.no_repopick, R.string.no_repopick}, // No repopick switch
-            {R.string.device_sweet, R.string.device_davinci}}; // Devices switch
+            {R.string.device_sweet, R.string.device_davinci}, // Devices switch
+            {R.string.user_build, R.string.userdebug_build, R.string.eng_build}}; // Build type switch
     public static final String[][] VALUES_FOR_SWITCHES = {
             {"", "--sync"}, // Sync switch
             {"", "--clean-product", "--clean"}, // Clean switch
@@ -28,8 +30,9 @@ public class Constants {
             {"", "--vanilla", "--gapps", "--both"}, // GApps switch
             {"", "--official"}, // Official switch
             {"", "--no-repopick"}, // No repopick switch
-            {"--device=sweet", "--device=davinci"}}; // Devices switch
-    public static final int[] DEFAULT_SWITCHES_VALUES = {1, 1, 1, 2, 1, 0, 0};
+            {"--device=sweet", "--device=davinci"}, // Devices switch
+            {"--buildtype=user", "--buildtype=userdebug", "--buildtype=eng"}}; // Build type switch
+    public static final int[] DEFAULT_SWITCHES_VALUES = {1, 1, 1, 2, 1, 0, 0, 1};
 
     public static final int BUILD_CARD_COUNT_DEFAULT = 8;
     public static final int BUILD_CARD_REFRESH_FREQ_DEFAULT = 2;

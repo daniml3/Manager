@@ -22,6 +22,9 @@
     <string name="build_confirmation_title">Build confirmation</string>
     <string name="build_confirmation_summary">Continuing will schedule a build in the server. Click accept if you want to proceed.</string>
     <string name="fetching_build_info">Fetching build information</string>
+    <string name="user_build" translatable="false">User</string>
+    <string name="userdebug_build" translatable="false">Userdebug</string>
+    <string name="eng_build" translatable="false">Eng</string>
 
     <!-- Device codenames -->
     <string name="device_sweet" translatable="false">Sweet</string>
