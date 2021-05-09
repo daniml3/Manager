@@ -60,6 +60,7 @@ public class BuildFragment extends Fragment {
     private int mBuildInfoCardCount;
 
     private boolean mPreparingUI;
+    private boolean mDetached;
 
     private ViewAnimator mTriggerBuildButtonAnimator;
 
@@ -70,6 +71,7 @@ public class BuildFragment extends Fragment {
         super.onAttach(context);
         mActivity = (Activity) context;
         mContext = context;
+        mDetached = false;
     }
 
     @Override
@@ -117,6 +119,7 @@ public class BuildFragment extends Fragment {
         if (mCardService != null) {
             mCardService.deInit();
         }
+        mDetached = true;
     }
 
     @Override
@@ -125,6 +128,8 @@ public class BuildFragment extends Fragment {
         if (mCardService != null) {
             mCardService.pause();
         }
+
+        mDetached = true;
     }
 
     @Override
@@ -152,7 +157,9 @@ public class BuildFragment extends Fragment {
     }
 
     private void showSnackBar(String content) {
-        Snackbar.make(mActivity.findViewById(R.id.build_snack_bar_placeholder), content, Snackbar.LENGTH_SHORT).show();
+        if (!mDetached) {
+            Snackbar.make(mActivity.findViewById(R.id.build_snack_bar_placeholder), content, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private Runnable getBuildScheduleRunnable() {
