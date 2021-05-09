@@ -89,7 +89,7 @@ public class BuildFragment extends Fragment {
 
         LinearLayout.LayoutParams layoutParams =
                 new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         layoutParams.setMargins(10, 10, 10, 10);
 
