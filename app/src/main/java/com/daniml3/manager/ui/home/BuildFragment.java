@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -30,6 +31,8 @@ import com.daniml3.manager.extensions.BuildButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -213,10 +216,10 @@ public class BuildFragment extends Fragment {
             });
 
             boolean isServerAvailable = Utils.isServerAvailable();
-            if (!mBuildToken.isEmpty()) {
-                mActivity.runOnUiThread(() -> mTriggerBuildButton.setText(R.string.getting_status));
 
+            if (!mBuildToken.isEmpty()) {
                 mActivity.runOnUiThread(() -> {
+                    mTriggerBuildButton.setText(R.string.getting_status);
                     if (!isServerAvailable) {
                         mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.button_disabled));
                         mTriggerBuildButton.setText(R.string.server_unavailable);
@@ -230,13 +233,11 @@ public class BuildFragment extends Fragment {
                 });
             }
 
-            mHandler.post(() -> {
-                if (isServerAvailable) {
-                    showSnackBar(mActivity.getString(R.string.fetching_build_info));
-                }
-                mCardService = new CardService(cardContainer, mBuildInfoCardCount, mContext);
-                mCardService.init();
-            });
+            if (isServerAvailable) {
+                showSnackBar(mActivity.getString(R.string.fetching_build_info));
+            }
+            mCardService = new CardService(cardContainer, mBuildInfoCardCount, mContext);
+            mCardService.init();
 
             mActivity.runOnUiThread(() -> mTriggerBuildButtonAnimator.stopLoadingAnimation());
             mPreparingUI = false;
