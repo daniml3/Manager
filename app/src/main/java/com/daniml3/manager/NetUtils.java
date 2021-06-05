@@ -1,19 +1,21 @@
 package com.daniml3.manager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class NetUtils {
-
     public static JSONObject getJSONResponse(URL url) {
         try {
-            return new JSONObject(getResponse(url));
+            return new JSONObject(Objects.requireNonNull(getResponse(url)));
         } catch (JSONException e) {
             return new JSONObject();
         } catch (NullPointerException e) {
@@ -33,7 +35,8 @@ public class NetUtils {
     public static String getResponse(URL url) {
         try {
             StringBuilder stringBuilder = new StringBuilder();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader bufferedReader =
+                    new BufferedReader(new InputStreamReader(url.openStream()));
 
             String line;
             while ((line = bufferedReader.readLine()) != null)

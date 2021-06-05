@@ -4,22 +4,18 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
-
 import com.daniml3.manager.NetUtils;
 import com.daniml3.manager.R;
 import com.daniml3.manager.TextUtils;
 import com.daniml3.manager.extensions.AnimatedButton;
 import com.daniml3.manager.extensions.ExpandableCardView;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CardLogHandler {
-
     private final int LOADING_ANIMATION_DURATION = 1000;
     private final int LAYOUT_CHANGE_DURATION = 100;
-
-    private final int mLogLineCount;
+    private final int LOG_LINE_COUNT;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -29,14 +25,16 @@ public class CardLogHandler {
 
     private final AnimatedButton mRefreshButton;
 
-    public CardLogHandler(ExpandableCardView expandableCardView, JSONObject jobInfo, int logLineCount) {
-        mLogLineCount = logLineCount;
+    public CardLogHandler(
+            ExpandableCardView expandableCardView, JSONObject jobInfo, int logLineCount) {
+        LOG_LINE_COUNT = logLineCount;
 
         mLogContainer = expandableCardView.findViewById(R.id.log_textview);
         mRefreshButton = expandableCardView.findViewById(R.id.refresh_button);
         mViewAnimator = new ViewAnimator(mLogContainer);
 
-        expandableCardView.setOnExpandListener(() -> new Thread(() -> {
+        expandableCardView.setOnExpandListener(()
+                                                       -> new Thread(() -> {
             String log;
             try {
                 mHandler.post(() -> {
@@ -48,15 +46,14 @@ public class CardLogHandler {
                     mRefreshButton.setOnClickListener(expandableCardView::callOnExpand);
                 });
 
-                log = NetUtils.getResponse(
-                        jobInfo.getString("url") + "/consoleText");
+                log = NetUtils.getResponse(jobInfo.getString("url") + "/consoleText");
 
                 if (log == null) {
                     onError();
                     return;
                 }
 
-                log = TextUtils.getLastLines(log, mLogLineCount);
+                log = TextUtils.getLastLines(log, LOG_LINE_COUNT);
 
                 String finalLog = log;
                 mHandler.post(() -> {
@@ -68,7 +65,8 @@ public class CardLogHandler {
                 onError();
                 e.printStackTrace();
             }
-        }).start(), true);
+        }).start(),
+                true);
 
         expandableCardView.setOnCollapseListener(() -> {
             mLogContainer.setText("");

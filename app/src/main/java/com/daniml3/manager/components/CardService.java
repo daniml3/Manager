@@ -12,20 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.daniml3.manager.Constants;
 import com.daniml3.manager.R;
 import com.daniml3.manager.Utils;
 import com.daniml3.manager.extensions.ExpandableCardView;
-
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class CardService {
-
     private final int CARD_FADE_DURATION = 250;
 
     private final int mCardCount;
@@ -48,7 +44,7 @@ public class CardService {
     private boolean mRunning;
     private boolean mPause;
 
-    private SharedPreferences mSharedPreferences;
+    private final SharedPreferences mSharedPreferences;
 
     private Thread mServiceThread;
 
@@ -56,12 +52,14 @@ public class CardService {
         mCardContainer = cardContainer;
         mCardCount = cardCount;
         mContext = context;
-        mSharedPreferences = context.getSharedPreferences(Constants.SETTINGS_PREFERENCES, 0);
+        mSharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name), 0);
 
         mBuildInfoCardList = new ArrayList<>();
         mHandler = new Handler(Looper.getMainLooper());
-        mRefreshFrequencyMs = mSharedPreferences.getInt(Constants.BUILD_CARD_REFRESH_FREQ_PREFERENCE, Constants.BUILD_CARD_REFRESH_FREQ_DEFAULT) * 1000;
-
+        mRefreshFrequencyMs = Integer.parseInt(mSharedPreferences.getString(
+                                      Constants.BUILD_CARD_REFRESH_FREQ_PREFERENCE,
+                                      Constants.BUILD_CARD_REFRESH_FREQ_DEFAULT))
+                * 1000;
     }
 
     public void init() {
@@ -81,9 +79,12 @@ public class CardService {
 
                             if (mJobsInfo.length() == 0) {
                                 clearBuildInfoCards();
-                            } else if (!mJobsInfo.getJSONObject(0).getString("fullDisplayName")
-                                    .equals(mLastJobsInfo.getJSONObject(0).getString("fullDisplayName")) ||
-                                    mBuildInfoCardList.isEmpty() || mJobsInfo.length() != mLastJobsInfo.length()) {
+                            } else if (!mJobsInfo.getJSONObject(0)
+                                                .getString("fullDisplayName")
+                                                .equals(mLastJobsInfo.getJSONObject(0).getString(
+                                                        "fullDisplayName"))
+                                    || mBuildInfoCardList.isEmpty()
+                                    || mJobsInfo.length() != mLastJobsInfo.length()) {
                                 generateAllCards();
                             } else {
                                 if (mJobsInfo.length() != 0) {
@@ -93,7 +94,8 @@ public class CardService {
                                         mHandler.post(() -> {
                                             try {
                                                 if (!mBuildInfoCardList.isEmpty()) {
-                                                    styleCard(mBuildInfoCardList.get(index), mJobsInfo.getJSONObject(index));
+                                                    styleCard(mBuildInfoCardList.get(index),
+                                                            mJobsInfo.getJSONObject(index));
                                                 }
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -122,13 +124,9 @@ public class CardService {
         clearBuildInfoCards();
     }
 
-    public void pause() {
-        mPause = true;
-    }
+    public void pause() { mPause = true; }
 
-    public void resume() {
-        mPause = false;
-    }
+    public void resume() { mPause = false; }
 
     private void generateAllCards() {
         clearBuildInfoCards();
@@ -148,8 +146,10 @@ public class CardService {
     }
 
     private void generateBuildInfoCard(JSONObject buildInfo) throws JSONException {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ExpandableCardView buildInfoCard = (ExpandableCardView) inflater.inflate(R.layout.build_info_card, mCardContainer, false);
+        LayoutInflater inflater =
+                (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ExpandableCardView buildInfoCard = (ExpandableCardView) inflater.inflate(
+                R.layout.build_info_card, mCardContainer, false);
         String title = buildInfo.getString("fullDisplayName");
         String url = buildInfo.getString("url");
 
@@ -159,7 +159,8 @@ public class CardService {
         buildTitle.setText(title);
 
         buildInfoCard.setExpandableView(logContainer);
-        buildInfoCard.setOnLongClickListener(() -> mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))));
+        buildInfoCard.setOnLongClickListener(
+                () -> mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))));
 
         buildInfoCard.setAlpha(0f);
         buildInfoCard.animate().alpha(1.0f).setDuration(250).start();
@@ -171,7 +172,9 @@ public class CardService {
             }
         });
 
-        new CardLogHandler(buildInfoCard, buildInfo, mSharedPreferences.getInt(Constants.LOG_LINE_COUNT_PREFERENCE, Constants.LOG_LINE_COUNT_DEFAULT));
+        new CardLogHandler(buildInfoCard, buildInfo,
+                Integer.parseInt(mSharedPreferences.getString(
+                        Constants.LOG_LINE_COUNT_PREFERENCE, Constants.LOG_LINE_COUNT_DEFAULT)));
 
         styleCard(buildInfoCard, buildInfo);
 
@@ -179,7 +182,8 @@ public class CardService {
         mCardContainer.addView(buildInfoCard);
     }
 
-    private void styleCard(ExpandableCardView buildInfoCard, JSONObject buildInfo) throws JSONException {
+    private void styleCard(ExpandableCardView buildInfoCard, JSONObject buildInfo)
+            throws JSONException {
         String status = buildInfo.getString("result");
 
         TextView buildStatus = buildInfoCard.findViewById(R.id.build_status);
@@ -216,7 +220,6 @@ public class CardService {
                 buildStatus.setText(Utils.firstLetterToUpperCase(status.toLowerCase()));
             }
         }
-
     }
 
     private void clearBuildInfoCards() {

@@ -2,18 +2,14 @@ package com.daniml3.manager.extensions;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 public class BuildButton extends MultipleStateButton {
-
     private static final String TAG = "BuildButton";
 
     private String[] mValueList;
 
-    public BuildButton(@NonNull Context context) {
-        super(context);
-    }
+    public BuildButton(@NonNull Context context) { super(context); }
 
     public String getCurrentBuildVariableValue() {
         if (mValueList.length == 0 || mValueList.length <= getState()) {

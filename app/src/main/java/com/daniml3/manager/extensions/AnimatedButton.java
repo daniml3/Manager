@@ -13,14 +13,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
 import androidx.annotation.NonNull;
-
 import com.daniml3.manager.Utils;
 
 public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
         implements View.OnTouchListener, View.OnLongClickListener {
-
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private final Context mContext;
@@ -34,9 +31,7 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
     private Runnable mOnClickListener;
     private Runnable mOnLongClickListener;
 
-    public AnimatedButton(@NonNull Context context) {
-        this(context, null);
-    }
+    public AnimatedButton(@NonNull Context context) { this(context, null); }
 
     public AnimatedButton(@NonNull Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -44,8 +39,7 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
 
         setOnTouchListener(this);
         ShapeDrawable shape = new ShapeDrawable(
-                new RoundRectShape(
-                        new float[]{30, 30, 30, 30, 30, 30, 30, 30}, null, null));
+                new RoundRectShape(new float[] {30, 30, 30, 30, 30, 30, 30, 30}, null, null));
 
         setBackgroundDrawable(shape);
         setOnClickListener(() -> Utils.vibrate(mContext));
@@ -53,13 +47,9 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
         setAnimationSpeed(100);
     }
 
-    public int getAnimationSpeed() {
-        return mAnimationSpeed;
-    }
+    public int getAnimationSpeed() { return mAnimationSpeed; }
 
-    public void setAnimationSpeed(int speed) {
-        mAnimationSpeed = speed;
-    }
+    public void setAnimationSpeed(int speed) { mAnimationSpeed = speed; }
 
     @Override
     public void setOnClickListener(OnClickListener listener) {
@@ -67,14 +57,9 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
                 "setOnClickListener(Runnable runnable)");
     }
 
-    public void setOnClickListener(Runnable runnable) {
-        mOnClickListener = runnable;
-    }
+    public void setOnClickListener(Runnable runnable) { mOnClickListener = runnable; }
 
-    public void clearOnClickListener() {
-        mOnClickListener = () -> {
-        };
-    }
+    public void clearOnClickListener() { mOnClickListener = () -> {}; }
 
     @Override
     public boolean callOnClick() {
@@ -141,7 +126,8 @@ public class AnimatedButton extends androidx.appcompat.widget.AppCompatButton
     }
 
     private void deprecate(String deprecation, String alternative) {
-        Log.e(TAG, String.format("%s is deprecated, please use %s instead", deprecation, alternative));
+        Log.e(TAG,
+                String.format("%s is deprecated, please use %s instead", deprecation, alternative));
         throw new RuntimeException();
     }
 }

@@ -4,6 +4,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#FF252525</color>
+    <color name="light_blue">#FF3399CC</color>
 
     <!-- Accents -->
     <color name="light_accent">#FFE3E3E3</color>

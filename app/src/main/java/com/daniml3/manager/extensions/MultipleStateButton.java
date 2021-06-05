@@ -2,11 +2,9 @@ package com.daniml3.manager.extensions;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 public class MultipleStateButton extends AnimatedButton {
-
     private static final String TAG = "MultipleStateButton";
 
     private final Context mContext;
@@ -14,8 +12,8 @@ public class MultipleStateButton extends AnimatedButton {
     private int mState = 0;
     private int mMaxState = 1;
 
-    private int[] mColorList = new int[]{};
-    private int[] mTextList = new int[]{};
+    private int[] mColorList = new int[] {};
+    private int[] mTextList = new int[] {};
 
     private boolean mRetainHeight;
     private boolean mRetainWidth;
@@ -41,22 +39,16 @@ public class MultipleStateButton extends AnimatedButton {
         });
     }
 
-    public void setMaximumState(int state) {
-        mMaxState = state;
-    }
+    public void setMaximumState(int state) { mMaxState = state; }
 
-    public int getState() {
-        return mState;
-    }
+    public int getState() { return mState; }
 
     public void setState(int state) {
         mState = state;
         update();
     }
 
-    public int getMaxStates() {
-        return mMaxState;
-    }
+    public int getMaxStates() { return mMaxState; }
 
     public void setColorListForStates(int[] colorList) {
         mColorList = colorList;
@@ -68,13 +60,9 @@ public class MultipleStateButton extends AnimatedButton {
         updateText();
     }
 
-    public void setRetainHeight(boolean retain) {
-        mRetainHeight = retain;
-    }
+    public void setRetainHeight(boolean retain) { mRetainHeight = retain; }
 
-    public void setRetainWidth(boolean retain) {
-        mRetainWidth = retain;
-    }
+    public void setRetainWidth(boolean retain) { mRetainWidth = retain; }
 
     private void incrementState() {
         if (mState < mMaxState) {
@@ -85,11 +73,8 @@ public class MultipleStateButton extends AnimatedButton {
     }
 
     private void update() {
-
         updateBackgroundTint();
         updateText();
-
-
     }
 
     private void updateBackgroundTint() {
@@ -108,9 +93,7 @@ public class MultipleStateButton extends AnimatedButton {
         setText(mTextList[mState]);
     }
 
-    private boolean isStateInvalid(int state) {
-        return (state > mMaxState || state < 0);
-    }
+    private boolean isStateInvalid(int state) { return (state > mMaxState || state < 0); }
 
     public void validate() {
         if (isStateInvalid(mState)) {

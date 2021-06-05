@@ -4,12 +4,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
 public class ViewAnimator {
-
     private final View mTargetView;
 
     private final Handler mHandler;
@@ -41,17 +39,19 @@ public class ViewAnimator {
     private Runnable scheduleFadeRunnable(boolean fadeOut, int delay) {
         return () -> mHandler.post(() -> {
             if (isLoadingAnimating()) {
-                mTargetView.animate().alpha(fadeOut ? 1.0f : 0.5f).setDuration(mLoadingAnimationDuration).start();
+                mTargetView.animate()
+                        .alpha(fadeOut ? 1.0f : 0.5f)
+                        .setDuration(mLoadingAnimationDuration)
+                        .start();
                 mHandler.postDelayed(scheduleFadeRunnable(!fadeOut, delay), delay);
             }
         });
     }
 
-    public boolean isLoadingAnimating() {
-        return mLoadingAnimating;
-    }
+    public boolean isLoadingAnimating() { return mLoadingAnimating; }
 
     public void startSmoothLayoutChange(int duration) {
-        TransitionManager.beginDelayedTransition((ViewGroup) mTargetView.getRootView(), new AutoTransition().setDuration(duration));
+        TransitionManager.beginDelayedTransition(
+                (ViewGroup) mTargetView.getRootView(), new AutoTransition().setDuration(duration));
     }
 }

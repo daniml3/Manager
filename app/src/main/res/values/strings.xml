@@ -29,6 +29,7 @@
     <!-- Device codenames -->
     <string name="device_sweet" translatable="false">Sweet</string>
     <string name="device_davinci" translatable="false">Davinci</string>
+    <string name="device_potter" translatable="false">Potter</string>
 
     <!-- Settings -->
     <string name="build_token_hint">Build token</string>
@@ -41,14 +42,13 @@
     <!-- Build buttons -->
     <string name="sync">Sync</string>
     <string name="clean">Clean</string>
-    <string name="clean_product">Clean\nproduct</string>
     <string name="ccache">CCache</string>
     <string name="default_value">Default</string>
     <string name="vanilla">Vanilla</string>
     <string name="gapps">GApps</string>
     <string name="both">Both</string>
     <string name="official">Official</string>
-    <string name="no_repopick">No\nrepopick</string>
+    <string name="no_repopick">Repopick</string>
 
     <!-- Build status -->
     <string name="build_building">Building</string>

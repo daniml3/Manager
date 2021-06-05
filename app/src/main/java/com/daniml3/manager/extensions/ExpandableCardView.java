@@ -7,15 +7,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
 import androidx.cardview.widget.CardView;
-
 import com.daniml3.manager.Utils;
 import com.daniml3.manager.components.ViewAnimator;
 
-public class ExpandableCardView extends CardView
-        implements View.OnTouchListener, View.OnLongClickListener {
-
+public class ExpandableCardView
+        extends CardView implements View.OnTouchListener, View.OnLongClickListener {
     private final String TAG = "ExpandableCardView";
 
     private final ViewAnimator mViewAnimator;
@@ -38,9 +35,7 @@ public class ExpandableCardView extends CardView
 
     private int mExpandDuration = 100;
 
-    public ExpandableCardView(Context context) {
-        this(context, null);
-    }
+    public ExpandableCardView(Context context) { this(context, null); }
 
     public ExpandableCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -65,10 +60,7 @@ public class ExpandableCardView extends CardView
         }
     }
 
-    public void clearOnClickListener() {
-        mOnClickListener = () -> {
-        };
-    }
+    public void clearOnClickListener() { mOnClickListener = () -> {}; }
 
     @Override
     public boolean onLongClick(View view) {
@@ -90,18 +82,14 @@ public class ExpandableCardView extends CardView
         };
     }
 
-    public View getExpandableView() {
-        return mExpandableView;
-    }
+    public View getExpandableView() { return mExpandableView; }
 
     public void setExpandableView(View view) {
         mExpandableView = view;
         setExpanded(mExpanded);
     }
 
-    public boolean isExpanded() {
-        return mExpanded;
-    }
+    public boolean isExpanded() { return mExpanded; }
 
     public void setExpanded(boolean expanded) {
         mExpanded = expanded;
@@ -136,17 +124,11 @@ public class ExpandableCardView extends CardView
         return callRunnable(mOnClickListener);
     }
 
-    public void callOnLongClick() {
-        callRunnable(mOnLongClickListener);
-    }
+    public void callOnLongClick() { callRunnable(mOnLongClickListener); }
 
-    public void callOnExpand() {
-        callRunnable(mOnExpand);
-    }
+    public void callOnExpand() { callRunnable(mOnExpand); }
 
-    public void callOnCollapse() {
-        callRunnable(mOnCollapse);
-    }
+    public void callOnCollapse() { callRunnable(mOnCollapse); }
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
@@ -170,9 +152,7 @@ public class ExpandableCardView extends CardView
         return true;
     }
 
-    public void setExpandAnimationDuration(int duration) {
-        mExpandDuration = duration;
-    }
+    public void setExpandAnimationDuration(int duration) { mExpandDuration = duration; }
 
     private boolean callRunnable(Runnable runnable) {
         if (runnable != null) {
@@ -184,7 +164,8 @@ public class ExpandableCardView extends CardView
     }
 
     private void deprecate(String deprecation, String alternative) {
-        Log.e(TAG, String.format("%s is deprecated, please use %s instead", deprecation, alternative));
+        Log.e(TAG,
+                String.format("%s is deprecated, please use %s instead", deprecation, alternative));
         throw new RuntimeException();
     }
 }

@@ -1,9 +1,12 @@
 package com.daniml3.manager.ui.home;
 
+import static com.daniml3.manager.Constants.TAG;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,13 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-
 import com.daniml3.manager.Constants;
 import com.daniml3.manager.NetUtils;
 import com.daniml3.manager.R;
@@ -29,17 +28,10 @@ import com.daniml3.manager.components.ViewAnimator;
 import com.daniml3.manager.extensions.AnimatedButton;
 import com.daniml3.manager.extensions.BuildButton;
 import com.google.android.material.snackbar.Snackbar;
-
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-
-import static com.daniml3.manager.Constants.TAG;
+import org.jetbrains.annotations.NotNull;
 
 public class BuildFragment extends Fragment {
-
     private final int BUTTON_FADE_DURATION = 1000;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -57,8 +49,6 @@ public class BuildFragment extends Fragment {
     private ArrayList<String> mArgumentList;
     private ArrayList<BuildButton> mBuildButtonList;
     private ArrayList<LinearLayout> mLinearLayoutList;
-
-    private ScrollView mMainContainer;
 
     private int mBuildInfoCardCount;
 
@@ -83,19 +73,17 @@ public class BuildFragment extends Fragment {
         mArgumentList = new ArrayList<>();
         mLinearLayoutList = new ArrayList<>();
 
-        sharedPreferences = mActivity.getSharedPreferences(Constants.SETTINGS_PREFERENCES, 0);
+        sharedPreferences = mActivity.getSharedPreferences(getString(R.string.app_name), 0);
         mTriggerBuildButton = mActivity.findViewById(R.id.build_button);
-        mMainContainer = mActivity.findViewById(R.id.main_build_container);
 
         mBuildToken = sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, "");
-        mBuildInfoCardCount = sharedPreferences.getInt(Constants.BUILD_CAR_COUNT_PREFERENCE, Constants.BUILD_CARD_COUNT_DEFAULT);
+        mBuildInfoCardCount = Integer.parseInt(sharedPreferences.getString(
+                Constants.BUILD_CAR_COUNT_PREFERENCE, Constants.BUILD_CARD_COUNT_DEFAULT));
 
         mTriggerBuildButtonAnimator = new ViewAnimator(mTriggerBuildButton);
 
-        LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         layoutParams.setMargins(10, 10, 10, 10);
 
         mBuildButtonList.clear();
@@ -106,13 +94,14 @@ public class BuildFragment extends Fragment {
             return true;
         });
 
-        generateConfigButtons(layoutParams);
-        prepareUI();
+        mHandler.post(() -> {
+            generateConfigButtons(layoutParams);
+            prepareUI();
+        });
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_build, container, false);
     }
 
@@ -144,7 +133,11 @@ public class BuildFragment extends Fragment {
     }
 
     private LinearLayout getLinearLayout(int currentItemCount) {
-        if (currentItemCount % 3 == 0) {
+        int maxColumnCount = (getResources().getConfiguration().orientation
+                                     == Configuration.ORIENTATION_LANDSCAPE)
+                ? 5
+                : 3;
+        if (currentItemCount % maxColumnCount == 0) {
             LinearLayout linearLayout = new LinearLayout(mContext);
 
             linearLayout.setPadding(0, 10, 0, 10);
@@ -161,7 +154,9 @@ public class BuildFragment extends Fragment {
 
     private void showSnackBar(String content) {
         if (!mDetached) {
-            Snackbar.make(mActivity.findViewById(R.id.build_snack_bar_placeholder), content, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mActivity.findViewById(R.id.build_snack_bar_placeholder), content,
+                            Snackbar.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -178,13 +173,15 @@ public class BuildFragment extends Fragment {
             if (Utils.getServerAvailableResponse().length() == 0) {
                 Log.d(TAG, "Server unavailable");
 
-                mActivity.runOnUiThread(() -> showSnackBar(mActivity.getString(R.string.server_unavailable)));
+                mActivity.runOnUiThread(
+                        () -> showSnackBar(mActivity.getString(R.string.server_unavailable)));
                 return;
             }
 
             mActivity.runOnUiThread(() -> mTriggerBuildButtonAnimator.stopLoadingAnimation());
             NetUtils.getJSONResponse(Utils.getSchedulingUrl(
-                    sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, ""), mArgumentList));
+                    sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, ""),
+                    mArgumentList));
             mActivity.runOnUiThread(() -> mTriggerBuildButtonAnimator.stopLoadingAnimation());
         };
     }
@@ -196,7 +193,6 @@ public class BuildFragment extends Fragment {
 
         mBuildToken = sharedPreferences.getString(Constants.BUILD_TOKEN_PREFERENCE, "");
         mPreparingUI = true;
-        mMainContainer.fullScroll(ScrollView.FOCUS_UP);
 
         new Thread(() -> {
             LinearLayout cardContainer = mActivity.findViewById(R.id.build_info_card_container);
@@ -207,7 +203,8 @@ public class BuildFragment extends Fragment {
                 }
 
                 if (mBuildToken.isEmpty()) {
-                    mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.button_disabled));
+                    mTriggerBuildButton.setBackgroundTintList(
+                            mActivity.getColorStateList(R.color.button_disabled));
                     mTriggerBuildButton.setText(R.string.missing_build_token);
                     mTriggerBuildButton.clearOnClickListener();
                 } else {
@@ -221,14 +218,17 @@ public class BuildFragment extends Fragment {
                 mActivity.runOnUiThread(() -> {
                     mTriggerBuildButton.setText(R.string.getting_status);
                     if (!isServerAvailable) {
-                        mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.button_disabled));
+                        mTriggerBuildButton.setBackgroundTintList(
+                                mActivity.getColorStateList(R.color.button_disabled));
                         mTriggerBuildButton.setText(R.string.server_unavailable);
                         showSnackBar(mActivity.getString(R.string.server_unavailable));
                         mTriggerBuildButton.setOnClickListener(this::prepareUI);
                     } else if (!mBuildToken.isEmpty()) {
-                        mTriggerBuildButton.setBackgroundTintList(mActivity.getColorStateList(R.color.blue));
+                        mTriggerBuildButton.setBackgroundTintList(
+                                mActivity.getColorStateList(R.color.blue));
                         mTriggerBuildButton.setText(R.string.menu_build);
-                        mTriggerBuildButton.setOnClickListener(() -> getBuildConfirmationDialog().show());
+                        mTriggerBuildButton.setOnClickListener(
+                                () -> getBuildConfirmationDialog().show());
                     }
                 });
             }
@@ -278,7 +278,8 @@ public class BuildFragment extends Fragment {
     private AlertDialog.Builder getBuildConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-        builder.setPositiveButton(R.string.accept, (dialog, which) -> new Thread(getBuildScheduleRunnable()).start());
+        builder.setPositiveButton(
+                R.string.accept, (dialog, which) -> new Thread(getBuildScheduleRunnable()).start());
         builder.setNegativeButton(R.string.cancel, null);
 
         builder.setTitle(R.string.build_confirmation_title);
